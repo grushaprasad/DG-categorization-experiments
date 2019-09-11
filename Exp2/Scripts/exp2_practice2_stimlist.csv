@@ -1,0 +1,5 @@
+stim_fname,target_fname,condition
+../combined_stims/dg01_low.wav,a_dg01_CV.wav,low
+../combined_stims/dg02_high.wav,a_dg02_CV.wav,high
+../combined_stims/dg19_low.wav,a_dg19_CV.wav,low
+../combined_stims/dg20_high.wav,a_dg20_CV.wav,high
