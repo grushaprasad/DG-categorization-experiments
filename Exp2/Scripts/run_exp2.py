@@ -14,7 +14,7 @@ stimFile_practice1 = 'exp2_practice1_stimlist.csv'
 stimFile_practice2 = 'exp2_practice2_stimlist.csv'
 
 dataFile = open(dataFilename,'w')
-dataFile.write(','.join(['part_id','target_fname','cond', 'trial_id','response','\n']))
+dataFile.write(','.join(['part_id','target_fname','cond', 'practice', 'trial_id','response','\n']))
 dataFile.close()
 
 def playSound(soundFile):  
@@ -102,7 +102,7 @@ waitPress()
 trials_practice1 = data.TrialHandler(nReps=1,method='random',dataTypes=None,extraInfo=None,seed=None,trialList=data.importConditions(stimFile_practice1))
 
 for i,trial in enumerate(trials_practice1):
-    runTrial(trial, i)
+    runTrial(trial, i, practice = True)
 
 message.setText("Do you have any questions?\n Press the space bar when you are ready to start the first part of the experiment.")
 message.draw()
@@ -125,7 +125,7 @@ waitPress()
 trials_practice2 = data.TrialHandler(nReps=1,method='random',dataTypes=None,extraInfo=None,seed=None,trialList=data.importConditions(stimFile_practice2))
 
 for i,trial in enumerate(trials_practice2):
-    runTrial(trial, i)
+    runTrial(trial, i, practice = True)
 
 
 message.setText("Do you have any questions?\n Press the space bar when you are ready to start the second part of the experiment.")
