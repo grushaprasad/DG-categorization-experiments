@@ -75,7 +75,7 @@ datdir <- '../data/'
 practice_members = c('01', '02', '19', '20')
 
 fname <- 'DGcontext_Exp2'
-partnums <- c(1:6)
+partnums <- c(1:14)
 partnums <- ifelse(partnums < 10, paste("0",as.character(partnums), sep = ""), as.character(partnums))
 
 partids <- paste(fname,"part",partnums, ".csv", sep = "")
@@ -105,9 +105,10 @@ practice_dat$cond <- ifelse(grepl('high', practice_dat$target_fname), 'high',
 ggplot(practice_dat, aes(continuum_member, response_num, colour = cond)) + geom_point() + facet_wrap(~part_id)
 
 ```
+Participants 11 and 13 look weird. Maybe exclude them? 
+
 
 ```{r}
-
 block1_summ <- data_summary(subset(exp_dat, cond == 'block1'), 'response_num', .(continuum_member))
 block1_summ_bypart <- data_summary(subset(exp_dat, cond == 'block1'), 'response_num', .(continuum_member, part_id))
 
@@ -130,4 +131,28 @@ ggplot(block2_summ,
 ggplot(block2_summ_bypart,
        aes(continuum_member, response_num, colour = cond, group = cond, linetype = cond)) + geom_point(position=position_dodge(0.05)) + geom_line() + geom_errorbar(aes(ymin=response_num-ci, ymax=response_num+ci), width=.2,position=position_dodge(0.05)) +  labs(x = 'Continuum member', y='% G responses') + facet_wrap(~part_id) + scale_colour_manual(values = c('black', 'blue', 'red'))
 
+# Exlcuding 11 and 13
+
+
+block2_summ <- data_summary(subset(exp_dat, !(part_id %in% c('part11', 'part13'))) , 'response_num', .(continuum_member, cond))
+
+ggplot(block2_summ,
+       aes(continuum_member, response_num, colour = cond, group = cond, linetype = cond)) + geom_point(position=position_dodge(0.05)) + geom_line() + geom_errorbar(aes(ymin=response_num-ci, ymax=response_num+ci), width=.2,position=position_dodge(0.05)) +  labs(x = 'Continuum member', y='% G responses') + scale_colour_manual(values = c('black', 'blue', 'red'))
 ```
+
+### Statistical analyses
+
+```{r, cache=TRUE}
+exp_dat$continuum_member <- as.integer(exp_dat$continuum_member)
+contrasts(exp_dat$cond)
+
+model1 <- glmer(response_num~scale(continuum_member)*cond + (1 + scale(continuum_member)*cond | part_id ), data = exp_dat,  family = binomial(link = "logit"), glmerControl(optimizer="bobyqa"))
+
+summary(model1)
+
+# Simpler random effect structure
+model1.2 <- glmer(response_num~scale(continuum_member)*cond + (1 + cond | part_id ), data = exp_dat,  family = binomial(link = "logit"), glmerControl(optimizer="bobyqa"))
+
+summary(model1.2)
+```
+
